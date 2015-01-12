@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html  
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+
+        <br></br>
+
+        <!-- CREATE -->
+        <h:form id="formCreate">            
+            <h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="newmovie" >
+                <h:outputText value="Nueva película" />
+            </h:outputLink>
+
+            <p:growl id="msgsCreate" showDetail="true" life="1000" />
+
+            <p:dialog header="Nueva película" widgetVar="dlg" resizable="false" >
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel for="id" value="ID:" />
+                    <p:inputText id="id" value="#{movieManagedBean.id}" required="true" label="id" />
+
+                    <h:outputLabel for="name" value="Nombre:" />
+                    <p:inputText id="name" value="#{movieManagedBean.nombre}" required="true" label="nombre" />
+
+                    <h:outputLabel for="actors" value="Actores:" />
+                    <p:inputText id="actores" value="#{movieManagedBean.actores}" required="true" label="actores" />
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Crear" actionListener="#{movieManagedBean.onCreate}" update=":formDataTable:movies msgsCreate" oncomplete="PF('dlg').hide()"/>
+                    </f:facet>  
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <br></br>
+
+
+        <!--FORM DATA TABLE -->
+
+        <h:form id="formDataTable">
+
+            <p:growl id="msgsDataTable" showDetail="true"/>
+
+
+            <!-- Data table -->
+
+            <p:dataTable id="movies" var="movie" value="#{movieManagedBean.movies}" editable="true" style="margin-bottom:20px">
+
+                <p:ajax event="rowEdit" listener="#{movieManagedBean.onRowEdit}" update=":formDataTable:msgsDataTable" />
+                <p:ajax event="rowEditCancel" listener="#{movieManagedBean.onRowCancel}" update=":formDataTable:msgsDataTable" />
+
+
+                <p:column headerText="Código">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{movie.id}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{movie.id}" style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Nombre">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{movie.name}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{movie.name}" style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Actores">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{movie.actors}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{movie.actors}" style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+
+                <!-- Opción editar -->
+                <p:column style="width:32px">
+                    <p:rowEditor />
+                </p:column>
+
+                <!-- Opción borrar -->
+
+                <p:column style="width:32px">
+                    <p:commandButton icon="ui-icon-trash"
+                                     title="Borrar"
+                                     actionListener="#{movieManagedBean.onDelete(movie)}"
+                                     ajax="false" />
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+
+    </h:body>
+
+
+
+
+
+
+</html>
+
