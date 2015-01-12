@@ -1,14 +1,14 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html  
+<ui:composition  
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:p="http://primefaces.org/ui"
+    template="/templates/layout.xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <h:head>
-        <title>Facelet Title</title>
-    </h:head>
-    <h:body>
+
+    <ui:define name="content">
 
         <br></br>
 
@@ -50,7 +50,7 @@
 
             <!-- Data table -->
 
-            <p:dataTable id="movies" var="movie" value="#{movieManagedBean.movies}" editable="true" style="margin-bottom:20px">
+            <p:dataTable id="movies" var="movie" value="#{movieManagedBean.movies}" editable="true" style="margin-bottom:20px" rows="10" paginator="true">
 
                 <p:ajax event="rowEdit" listener="#{movieManagedBean.onRowEdit}" update=":formDataTable:msgsDataTable" />
                 <p:ajax event="rowEditCancel" listener="#{movieManagedBean.onRowCancel}" update=":formDataTable:msgsDataTable" />
@@ -96,12 +96,12 @@
 
         </h:form>
 
-    </h:body>
+    </ui:define>
 
 
 
 
 
 
-</html>
+</ui:composition>
 

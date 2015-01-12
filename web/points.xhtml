@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  
+    xmlns="http://www.w3.org/1999/xhtml"
+    template="/templates/layout.xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <br></br>
+
+        <!-- CREATE -->
+        <h:form id="formCreate">            
+            <h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="newpoint" >
+                <h:outputText value="Nuevo punto" />
+            </h:outputLink>
+
+            <p:growl id="msgsCreate" showDetail="true" life="1000" />
+
+            <p:dialog header="Nuevo punto" widgetVar="dlg" resizable="false" >
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel for="id" value="ID:" />
+                    <p:inputText id="id" value="#{pointsManagedBean.id}" required="true" label="id" />
+
+                    <h:outputLabel for="name" value="Puntos:" />
+                    <p:inputText id="name" value="#{pointsManagedBean.puntos}" required="true" label="puntos" />
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Crear" actionListener="#{pointsManagedBean.onCreate()}" update=":formDataTable:points msgsCreate" oncomplete="PF('dlg').hide()"/>
+                    </f:facet>  
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <br></br>
+
+
+        <!--FORM DATA TABLE -->
+
+        <h:form id="formDataTable">
+
+            <p:growl id="msgsDataTable" showDetail="true"/>
+
+
+            <!-- Data table -->
+
+            <p:dataTable id="points" var="point" value="#{pointsManagedBean.points}" editable="true" style="margin-bottom:20px" rows="10" paginator="true">
+
+                <p:ajax event="rowEdit" listener="#{pointsManagedBean.onRowEdit}" update=":formDataTable:msgsDataTable" />
+                <p:ajax event="rowEditCancel" listener="#{pointsManagedBean.onRowCancel}" update=":formDataTable:msgsDataTable" />
+
+
+                <p:column headerText="Código">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{point.id}"  /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{point.id}" style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Puntos">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{point.points}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{point.points}" style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+
+                <!-- Opción editar -->
+                <p:column style="width:32px">
+                    <p:rowEditor />
+                </p:column>
+
+                <!-- Opción borrar -->
+
+                <p:column style="width:32px">
+                    <p:commandButton icon="ui-icon-trash"
+                                     title="Borrar"
+                                     actionListener="#{pointsManagedBean.onDelete(point)}"
+                                     ajax="false" />
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

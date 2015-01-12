@@ -19,4 +19,19 @@
         <managed-bean-class>com.peliculas.managedbeans.UserManagedBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>timeslotManagedBean</managed-bean-name>
+        <managed-bean-class>com.peliculas.managedbeans.TimeslotManagedBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>theaterManagedBean</managed-bean-name>
+        <managed-bean-class>com.peliculas.managedbeans.TheaterManagedBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>pointsManagedBean</managed-bean-name>
+        <managed-bean-class>com.peliculas.managedbeans.PointsManagedBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
 </faces-config>
