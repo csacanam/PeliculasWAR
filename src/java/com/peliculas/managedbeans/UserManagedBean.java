@@ -7,9 +7,14 @@ package com.peliculas.managedbeans;
 
 import com.peliculas.entities.Usuario;
 import com.peliculas.sessionbeans.UsuarioFacade;
+import com.peliculas.utils.CipherAlgorithms;
 import com.peliculas.utils.Validaciones;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -56,25 +61,32 @@ public class UserManagedBean
         {
             Usuario usuTemp = usuarioFacade.find(name);
 
-            // El login es correcto
-            if (usuTemp != null && usuTemp.getPassword().equals(password))
+            try
             {
-                try
+                // El login es correcto
+                if (usuTemp != null && CipherAlgorithms.decrypt(usuTemp.getPassword()).equals(password))
                 {
-                    ec.redirect(req.getContextPath() + "/faces/user/movies.xhtml?i=0");
-                    setIsLogged(true);
+                    try
+                    {
+                        ec.redirect(req.getContextPath() + "/faces/user/movies.xhtml?i=0");
+                        setIsLogged(true);
 
-                } catch (IOException ex)
+                    } catch (IOException ex)
+                    {
+                        setIsLogged(false);
+                        fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo iniciar sesión", "Intenta más tarde"));
+                    }
+
+                } else
                 {
                     setIsLogged(false);
-                    fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo iniciar sesión", "Intenta más tarde"));
-                }
+                    fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Datos incorrectos", "Digite correctamente su username o su contraseña"));
 
-            } else
+                }
+            } catch (GeneralSecurityException | IOException ex)
             {
                 setIsLogged(false);
-                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Datos incorrectos", "Digite correctamente su username o su contraseña"));
-
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo iniciar sesión", "Intenta más tarde"));
             }
         } else
         {
@@ -121,8 +133,18 @@ public class UserManagedBean
 
             if (usuTemp == null)
             {
-                usuarioFacade.create(new Usuario(name, password));
-                login();
+                String encryptedPassword;
+                try
+                {
+                    encryptedPassword = CipherAlgorithms.encrypt(password);
+                    usuarioFacade.create(new Usuario(name, encryptedPassword));
+                    login();
+                } catch (GeneralSecurityException | UnsupportedEncodingException ex)
+                {
+                    fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo registrar", "Intente más tarde"));
+
+                }
+
             } else
             {
                 fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "El username ya ha sido usado", "Intente con otro username"));
