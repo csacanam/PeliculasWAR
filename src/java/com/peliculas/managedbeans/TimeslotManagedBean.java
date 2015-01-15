@@ -26,6 +26,7 @@ import org.primefaces.event.RowEditEvent;
 public class TimeslotManagedBean implements Converter
 {
 
+    //Lista de timeslots
     private List<Timeslot> timeslots;
 
     //Atributos
@@ -49,6 +50,11 @@ public class TimeslotManagedBean implements Converter
         timeslots = timeslotFacade.findAll();
     }
 
+    /**
+     * Se invoca cuando se desea editar un timeslot
+     *
+     * @param event Evento relacionado con la edición de la fila
+     */
     public void onRowEdit(RowEditEvent event)
     {
 
@@ -65,12 +71,22 @@ public class TimeslotManagedBean implements Converter
 
     }
 
+    /**
+     * Se invoca cuando se cancela la edición de un punto
+     *
+     * @param event Evento relacionado con la cancelación de la edición
+     */
     public void onRowCancel(RowEditEvent event)
     {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Edición anulada", ((Timeslot) event.getObject()).toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
+    /**
+     * Se invoca cuando se elimina un timeslot
+     *
+     * @param timeslot Timeslot que se desea eliminar
+     */
     public void onDelete(Timeslot timeslot)
     {
         if (timeslot != null)
@@ -84,6 +100,9 @@ public class TimeslotManagedBean implements Converter
         }
     }
 
+    /**
+     * Se invoca cuando se desea crear un timeslot en la base de datos
+     */
     public void onCreate()
     {
 
@@ -115,6 +134,12 @@ public class TimeslotManagedBean implements Converter
 
     }
 
+    /**
+     * Obtener todos los ShowTimings del Timeslot
+     *
+     * @param timeslotId Id del timeslot
+     * @return Lista de Show Timings del Timeslot
+     */
     public List<ShowTiming> getShowTimings(int timeslotId)
     {
         Timeslot timeslot = timeslotFacade.find(timeslotId);
@@ -189,6 +214,8 @@ public class TimeslotManagedBean implements Converter
         this.timeslotFacade = timeslotFacade;
     }
 
+        
+    //Métodos del Converter - Permiten editar cuando hay un ComboBox de la entidad
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value)
     {

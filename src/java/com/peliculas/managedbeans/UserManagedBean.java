@@ -12,16 +12,11 @@ import com.peliculas.utils.Validaciones;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -31,10 +26,12 @@ import javax.servlet.http.HttpServletRequest;
 public class UserManagedBean
 {
 
+    //Atributos
     private String name;
     private String password;
     private boolean isLogged;
 
+    //SessionBean
     @EJB
     UsuarioFacade usuarioFacade;
 
@@ -45,11 +42,10 @@ public class UserManagedBean
     {
     }
 
-    @PostConstruct
-    public void init()
-    {
-    }
 
+    /**
+     * Se invoca cuando algún usuario va a loguearse en el sitio 
+     */
     public void login()
     {
 
@@ -96,6 +92,9 @@ public class UserManagedBean
 
     }
 
+    /**
+     * Permite cerrar sesión al usuario
+     */
     public void logout()
     {
 
@@ -121,6 +120,9 @@ public class UserManagedBean
         }
     }
 
+    /**
+     * Permite registrar un nuevo usuario en la base de datos
+     */
     public void register()
     {
 
@@ -157,6 +159,8 @@ public class UserManagedBean
 
     }
 
+    // GETTERS AND SETTERS
+    
     public String getName()
     {
         return name;

@@ -24,6 +24,7 @@ import org.primefaces.event.RowEditEvent;
 public class SalesManagedBean implements Converter
 {
 
+    //Lista de ventas
     private List<Sales> sales;
 
     //Atributos
@@ -48,29 +49,43 @@ public class SalesManagedBean implements Converter
         sales = salesFacade.findAll();
     }
 
+    /**
+     * Se invoca cuando se desea editar una venta
+     *
+     * @param event Evento relacionado con la edición de la fila
+     */
     public void onRowEdit(RowEditEvent event)
     {
 
         Sales sale = ((Sales) event.getObject());
-       
 
         if (sale != null)
         {
 
             salesFacade.edit(sale);
 
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Venta editada", sale.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Venta editada", sale.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
     }
 
+    /**
+     * Se invoca cuando se cancela la edición de la fila
+     *
+     * @param event Evento relacionado con la cancelación de la edición
+     */
     public void onRowCancel(RowEditEvent event)
     {
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Edición anulada", ((Sales) event.getObject()).toString());
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Edición anulada", ((Sales) event.getObject()).toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
+    /**
+     * SE invoca cuando se desea eliminar una venta
+     *
+     * @param sale Venta que se desea eliminar
+     */
     public void onDelete(Sales sale)
     {
         if (sale != null)
@@ -79,11 +94,14 @@ public class SalesManagedBean implements Converter
 
             salesFacade.remove(sale);
 
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Venta eliminada", sale.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Venta eliminada", sale.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
 
+    /**
+     * Se invoca cuando se desea crear una nueva venta
+     */
     public void onCreate()
     {
 
@@ -95,12 +113,12 @@ public class SalesManagedBean implements Converter
 
             salesFacade.create(sale);
 
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Venta creada", sale.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Venta creada", sale.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
 
         } else
         {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"No se pudo crear", "Ya existe una venta con ese ID");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo crear", "Ya existe una venta con ese ID");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
@@ -146,7 +164,8 @@ public class SalesManagedBean implements Converter
     {
         this.showTiming = showTiming;
     }
-    
+
+    //Métodos del Converter - Permiten editar cuando hay un ComboBox de la entidad
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value)
     {
@@ -179,11 +198,10 @@ public class SalesManagedBean implements Converter
     @Override
     public String getAsString(FacesContext context, UIComponent component, Object value)
     {
-        if(value == null || value.equals(""))
+        if (value == null || value.equals(""))
         {
             return "";
-        }
-        else
+        } else
         {
             return ((Sales) value).getId().toString();
         }

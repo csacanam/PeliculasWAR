@@ -26,6 +26,7 @@ import org.primefaces.event.RowEditEvent;
 public class ShowTimingManagedBean implements Converter
 {
 
+    //Lista de Show Timings
     private List<ShowTiming> showTimings;
 
     //Atributos
@@ -52,6 +53,11 @@ public class ShowTimingManagedBean implements Converter
         showTimings = showTimingFacade.findAll();
     }
 
+    /**
+     * Se invoca cuando se desea editar un show timing
+     *
+     * @param event Evento relacionado con la edición del show timing
+     */
     public void onRowEdit(RowEditEvent event)
     {
 
@@ -68,12 +74,22 @@ public class ShowTimingManagedBean implements Converter
 
     }
 
+    /**
+     * Se invoca cuando se cancela la edición de un evento
+     *
+     * @param event Evento relacionado con la cancelación de la edición
+     */
     public void onRowCancel(RowEditEvent event)
     {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Edición anulada", ((ShowTiming) event.getObject()).toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
+    /**
+     * Se invoca cuando se desea eliminar un show timing
+     *
+     * @param showTiming Show timing que se desea eliminar
+     */
     public void onDelete(ShowTiming showTiming)
     {
         if (showTiming != null)
@@ -87,6 +103,9 @@ public class ShowTimingManagedBean implements Converter
         }
     }
 
+    /**
+     * Se invoca cuando se desea crear un nuevo show timing
+     */
     public void onCreate()
     {
 
@@ -184,6 +203,7 @@ public class ShowTimingManagedBean implements Converter
         this.movie = movie;
     }
 
+    //Métodos del Converter - Permiten editar cuando hay un ComboBox de la entidad
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value)
     {

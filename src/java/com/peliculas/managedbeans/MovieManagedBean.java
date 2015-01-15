@@ -24,6 +24,7 @@ import org.primefaces.event.RowEditEvent;
 public class MovieManagedBean implements Converter
 {
 
+    //Lista de películas
     private List<Movie> movies;
 
     //Atributos
@@ -48,6 +49,10 @@ public class MovieManagedBean implements Converter
         movies = movieFacade.findAll();
     }
 
+    /**
+     * Se invoca cuando se edita una película
+     * @param event Evento de la fila que se va a editar
+     */
     public void onRowEdit(RowEditEvent event)
     {
 
@@ -64,12 +69,20 @@ public class MovieManagedBean implements Converter
 
     }
 
+    /**
+     * Se invoca cuando se cancela la edición de una fila
+     * @param event Evento de la fila que se cancela
+     */
     public void onRowCancel(RowEditEvent event)
     {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Edición anulada", ((Movie) event.getObject()).getName());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
+    /**
+     * Se invoca cuando se va a eliminar una película de la base de datos
+     * @param movie Película que se desea eliminar
+     */
     public void onDelete(Movie movie)
     {
         if (movie != null)
@@ -83,6 +96,9 @@ public class MovieManagedBean implements Converter
         }
     }
 
+    /**
+     * Se invoca cuando se desea crear una nueva película
+     */
     public void onCreate()
     {
 
@@ -155,6 +171,8 @@ public class MovieManagedBean implements Converter
         this.actores = actores;
     }
 
+    //Métodos del Converter - Permiten editar cuando hay un ComboBox de la entidad
+    
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value)
     {

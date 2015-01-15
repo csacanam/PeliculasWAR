@@ -12,7 +12,11 @@ package com.peliculas.utils;
 public class Validaciones
 {
     
-    
+    /**
+     * Permite determinar si una cadena es vacía o no
+     * @param cadena Cadena que se desea evaluar
+     * @return True si es vacía, false en caso contrario
+     */
     public static boolean esVacio(String cadena)
     {
         if (cadena == null)

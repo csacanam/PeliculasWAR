@@ -23,6 +23,7 @@ import org.primefaces.event.RowEditEvent;
 public class PointsManagedBean
 {
 
+    //Lista de puntos
     private List<Points> points;
 
     //Atributos
@@ -46,6 +47,10 @@ public class PointsManagedBean
         points = pointsFacade.findAll();
     }
 
+    /**
+     * Se invoca cuando se va a crear un nuevo punto
+     * @param event Evento de edición de la fila
+     */
     public void onRowEdit(RowEditEvent event)
     {
 
@@ -62,12 +67,20 @@ public class PointsManagedBean
 
     }
 
+    /**
+     * Se invoca cuando se cancela la edición de un punto
+     * @param event Evento relacionado con la cancelación de la edición
+     */
     public void onRowCancel(RowEditEvent event)
     {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Edición anulada", ((Points) event.getObject()).toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
+    /**
+     * Se invoca cuando se va a eliminar un punto de la base de datos
+     * @param point Punto que se desea eliminar de la base de datos
+     */
     public void onDelete(Points point)
     {
         if (point != null)
@@ -81,6 +94,9 @@ public class PointsManagedBean
         }
     }
 
+    /**
+     * Se invoca cuando se va a crear un nuevo punto en la base de datos
+     */
     public void onCreate()
     {
 

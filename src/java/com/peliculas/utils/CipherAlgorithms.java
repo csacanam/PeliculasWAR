@@ -13,13 +13,6 @@ import org.primefaces.util.Base64;
 /**
  * Clase donde se encuentran los métodos para encriptar y desencriptar
  *
- * Se tenía un problema que decía que no se podía encriptar o desencriptar si la
- * entrada no era múltiplo de 16 bytes. La solución se encontró acá:
- * http://stackoverflow.com/questions/17567996/illegal-block-size-exception-input-length-must-be-multiple-of-16-when-decrypting
- *
- * Se usó la librería de Codes de Apache para codificar y de codificar cadenas
- * con base a 64 bytes. Esta última se encuentra disponible en:
- * http://commons.apache.org/proper/commons-codec/download_codec.cgi
  *
  * @author csacanam
  */
@@ -38,6 +31,13 @@ public class CipherAlgorithms
 
     }
 
+    /**
+     * Permite encriptar una cadena
+     * @param property Cadena que se desea encriptar
+     * @return Cadena encriptada
+     * @throws GeneralSecurityException
+     * @throws UnsupportedEncodingException 
+     */
     public static String encrypt(String property) throws GeneralSecurityException, UnsupportedEncodingException
     {
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
@@ -48,6 +48,13 @@ public class CipherAlgorithms
     }
 
 
+    /**
+     * Permite desencriptar una cadena
+     * @param property Texto encriptado
+     * @return Texto desencriptado
+     * @throws GeneralSecurityException
+     * @throws IOException 
+     */
     public static String decrypt(String property) throws GeneralSecurityException, IOException
     {
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");

@@ -25,6 +25,7 @@ import org.primefaces.event.RowEditEvent;
 public class TheaterManagedBean implements Converter
 {
 
+    //Lista de teatros
     private List<Theater> theaters;
 
     //Atributos
@@ -50,6 +51,11 @@ public class TheaterManagedBean implements Converter
         theaters = theaterFacade.findAll();
     }
 
+    /**
+     * Se invoca cuando se desea editar un teatro
+     *
+     * @param event Evento relacionado con la edición de la fila
+     */
     public void onRowEdit(RowEditEvent event)
     {
 
@@ -66,12 +72,22 @@ public class TheaterManagedBean implements Converter
 
     }
 
+    /**
+     * Se invoca cuando se cancela la edición de la fila
+     *
+     * @param event Evento relacionado con la cancelación de la edición
+     */
     public void onRowCancel(RowEditEvent event)
     {
         FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Edición anulada", ((Theater) event.getObject()).toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
+    /**
+     * Se invoca cuando se desea eliminar un teatro
+     *
+     * @param theater Teatro que se desea eliminar
+     */
     public void onDelete(Theater theater)
     {
         if (theater != null)
@@ -85,6 +101,9 @@ public class TheaterManagedBean implements Converter
         }
     }
 
+    /**
+     * Se invoca cuando se desea crear un nuevo teatro
+     */
     public void onCreate()
     {
 
@@ -107,19 +126,24 @@ public class TheaterManagedBean implements Converter
         }
 
     }
-    
+
+    /**
+     * Permite obtener la lista de Show Timings de un teatro
+     *
+     * @param theaterId Id del teatro
+     * @return Lista de Show Timings del teatro
+     */
     public List<ShowTiming> getShowTimings(int theaterId)
-    {        
+    {
         Theater theater = theaterFacade.find(theaterId);
-        if(theater != null)
+        if (theater != null)
         {
             return theater.getShowTimingList();
-        }
-        else
+        } else
         {
             return new ArrayList<>();
         }
-        
+
     }
 
     //GETTERS AND SETTERS
@@ -173,6 +197,7 @@ public class TheaterManagedBean implements Converter
         this.selectedTheater = selectedTheater;
     }
 
+    //Métodos del Converter - Permiten editar cuando hay un ComboBox de la entidad
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value)
     {
