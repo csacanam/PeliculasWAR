@@ -5,20 +5,24 @@
  */
 package com.peliculas.managedbeans;
 
+import com.peliculas.entities.ShowTiming;
 import com.peliculas.entities.Theater;
 import com.peliculas.sessionbeans.TheaterFacade;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 import org.primefaces.event.RowEditEvent;
 
 /**
  *
  * @author csacanam
  */
-public class TheaterManagedBean
+public class TheaterManagedBean implements Converter
 {
 
     private List<Theater> theaters;
@@ -27,6 +31,7 @@ public class TheaterManagedBean
     private int id;
     private int capacidad;
     private int showTimingList;
+    private int selectedTheater;
 
     //SessionBean
     @EJB
@@ -55,7 +60,7 @@ public class TheaterManagedBean
 
             theaterFacade.edit(theater);
 
-            FacesMessage msg = new FacesMessage("Teatro editado", theater.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Teatro editado", theater.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
@@ -63,7 +68,7 @@ public class TheaterManagedBean
 
     public void onRowCancel(RowEditEvent event)
     {
-        FacesMessage msg = new FacesMessage("Edición anulada", ((Theater) event.getObject()).toString());
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Edición anulada", ((Theater) event.getObject()).toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
@@ -75,7 +80,7 @@ public class TheaterManagedBean
 
             theaterFacade.remove(theater);
 
-            FacesMessage msg = new FacesMessage("Teatro eliminado", theater.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Teatro eliminado", theater.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
@@ -92,15 +97,29 @@ public class TheaterManagedBean
 
             theaterFacade.create(theater);
 
-            FacesMessage msg = new FacesMessage("Teatro creado", theater.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Teatro creado", theater.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
 
         } else
         {
-            FacesMessage msg = new FacesMessage("No se puede crear", "Ya existe un teatro con ese ID");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo crear", "Ya existe un teatro con ese ID");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
+    }
+    
+    public List<ShowTiming> getShowTimings(int theaterId)
+    {        
+        Theater theater = theaterFacade.find(theaterId);
+        if(theater != null)
+        {
+            return theater.getShowTimingList();
+        }
+        else
+        {
+            return new ArrayList<>();
+        }
+        
     }
 
     //GETTERS AND SETTERS
@@ -142,6 +161,57 @@ public class TheaterManagedBean
     public void setShowTimingList(int showTimingList)
     {
         this.showTimingList = showTimingList;
+    }
+
+    public int getSelectedTheater()
+    {
+        return selectedTheater;
+    }
+
+    public void setSelectedTheater(int selectedTheater)
+    {
+        this.selectedTheater = selectedTheater;
+    }
+
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value)
+    {
+
+        try
+        {
+            if (value.trim().equals(""))
+            {
+                return null;
+            } else
+            {
+                int theId = Integer.parseInt(value);
+
+                for (Theater theater : theaters)
+                {
+                    if (theater.getId() == theId)
+                    {
+                        return theater;
+                    }
+                }
+            }
+        } catch (NumberFormatException e)
+        {
+
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value)
+    {
+        if (value == null || value.equals(""))
+        {
+            return "";
+        } else
+        {
+            return ((Theater) value).getId().toString();
+        }
     }
 
 }

@@ -14,14 +14,16 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 import org.primefaces.event.RowEditEvent;
 
 /**
  *
  * @author csacanam
  */
-public class TimeslotManagedBean
+public class TimeslotManagedBean implements Converter
 {
 
     private List<Timeslot> timeslots;
@@ -30,7 +32,7 @@ public class TimeslotManagedBean
     private int id;
     private String startTime;
     private String endTime;
-    private ArrayList<ShowTiming> showTimingList;
+    private int selectedTimeslot;
 
     //Session Bean
     @EJB
@@ -57,7 +59,7 @@ public class TimeslotManagedBean
 
             timeslotFacade.edit(timeslot);
 
-            FacesMessage msg = new FacesMessage("Timeslot editado", timeslot.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Timeslot editado", timeslot.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
@@ -65,7 +67,7 @@ public class TimeslotManagedBean
 
     public void onRowCancel(RowEditEvent event)
     {
-        FacesMessage msg = new FacesMessage("Edición anulada", ((Timeslot) event.getObject()).toString());
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Edición anulada", ((Timeslot) event.getObject()).toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
@@ -77,7 +79,7 @@ public class TimeslotManagedBean
 
             timeslotFacade.remove(timeslot);
 
-            FacesMessage msg = new FacesMessage("Timeslot eliminado", timeslot.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Timeslot eliminado", timeslot.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
@@ -96,19 +98,32 @@ public class TimeslotManagedBean
 
                 timeslotFacade.create(timeslot);
 
-                FacesMessage msg = new FacesMessage("Timeslot creado", timeslot.toString());
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Timeslot creado", timeslot.toString());
                 FacesContext.getCurrentInstance().addMessage(null, msg);
 
             } else
             {
-                FacesMessage msg = new FacesMessage("No se puede crear", "Ya existe un timeslot con ese ID");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo crear", "Ya existe un timeslot con ese ID");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
             }
 
         } else
         {
-            FacesMessage msg = new FacesMessage("Campos vacíos", "Llena los campos para continuar");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Campos vacíos", "Llena los campos para continuar");
             FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
+
+    }
+
+    public List<ShowTiming> getShowTimings(int timeslotId)
+    {
+        Timeslot timeslot = timeslotFacade.find(timeslotId);
+        if (timeslot != null)
+        {
+            return timeslot.getShowTimingList();
+        } else
+        {
+            return new ArrayList<>();
         }
 
     }
@@ -144,16 +159,6 @@ public class TimeslotManagedBean
         this.endTime = endTime;
     }
 
-    public ArrayList<ShowTiming> getShowTimingList()
-    {
-        return showTimingList;
-    }
-
-    public void setShowTimingList(ArrayList<ShowTiming> showTimingList)
-    {
-        this.showTimingList = showTimingList;
-    }
-
     public List<Timeslot> getTimeslots()
     {
         return timeslots;
@@ -162,6 +167,67 @@ public class TimeslotManagedBean
     public void setTimeslots(List<Timeslot> timeslots)
     {
         this.timeslots = timeslots;
+    }
+
+    public int getSelectedTimeslot()
+    {
+        return selectedTimeslot;
+    }
+
+    public void setSelectedTimeslot(int selectedTimeslot)
+    {
+        this.selectedTimeslot = selectedTimeslot;
+    }
+
+    public TimeslotFacade getTimeslotFacade()
+    {
+        return timeslotFacade;
+    }
+
+    public void setTimeslotFacade(TimeslotFacade timeslotFacade)
+    {
+        this.timeslotFacade = timeslotFacade;
+    }
+
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value)
+    {
+
+        try
+        {
+            if (value.trim().equals(""))
+            {
+                return null;
+            } else
+            {
+                int theId = Integer.parseInt(value);
+
+                for (Timeslot timeslot : timeslots)
+                {
+                    if (timeslot.getId() == theId)
+                    {
+                        return timeslot;
+                    }
+                }
+            }
+        } catch (NumberFormatException e)
+        {
+
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value)
+    {
+        if (value == null || value.equals(""))
+        {
+            return "";
+        } else
+        {
+            return ((Timeslot) value).getId().toString();
+        }
     }
 
 }

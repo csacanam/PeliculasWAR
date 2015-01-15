@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  
+    xmlns="http://www.w3.org/1999/xhtml"
+    template="/templates/layout.xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <br></br>
+
+        <!-- CREATE -->
+        <h:form id="formCreate">            
+            <h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="newsale" >
+                <h:outputText value="Nueva venta" />
+            </h:outputLink>
+
+            <p:growl id="msgsCreate" showDetail="true" life="1000" />
+
+            <p:dialog header="Nueva venta" widgetVar="dlg" resizable="false" >
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel for="id" value="ID:" />
+                    <p:inputText id="id" value="#{salesManagedBean.id}" required="true" label="id" />
+
+                    <h:outputLabel for="name" value="Cantidad:"/>
+                    <p:inputText id="name" value="#{salesManagedBean.amount}" required="true" label="cantidad" />
+
+                    <f:facet name="footer">
+                        <p:commandButton value="Crear" actionListener="#{salesManagedBean.onCreate()}" update=":formDataTable:sales msgsCreate" oncomplete="PF('dlg').hide()"/>
+                    </f:facet>  
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <br></br>
+
+
+        <!--FORM DATA TABLE -->
+
+        <h:form id="formDataTable">
+
+            <p:growl id="msgsDataTable" showDetail="true"/>
+
+
+            <!-- Data table -->
+
+            <p:dataTable id="sales" var="sale" value="#{salesManagedBean.sales}" editable="true" style="margin-bottom:20px" rows="10" paginator="true">
+
+                <p:ajax event="rowEdit" listener="#{salesManagedBean.onRowEdit}" update=":formDataTable:msgsDataTable" />
+                <p:ajax event="rowEditCancel" listener="#{salesManagedBean.onRowCancel}" update=":formDataTable:msgsDataTable" />
+
+
+                <p:column headerText="Código">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{sale.id}"  /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{sale.id}" style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Cantidad">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{sale.amount}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{sale.amount}" style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+
+                <!-- Opción editar -->
+                <p:column style="width:32px">
+                    <p:rowEditor />
+                </p:column>
+
+                <!-- Opción borrar -->
+
+                <p:column style="width:32px">
+                    <p:commandButton icon="ui-icon-trash"
+                                     title="Borrar"
+                                     actionListener="#{salesManagedBean.onDelete(sale)}"
+                                     ajax="false" />
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

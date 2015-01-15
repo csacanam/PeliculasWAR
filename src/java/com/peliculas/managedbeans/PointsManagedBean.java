@@ -56,7 +56,7 @@ public class PointsManagedBean
 
             pointsFacade.edit(point);
 
-            FacesMessage msg = new FacesMessage("Punto editado", point.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Punto editado", point.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
@@ -64,7 +64,7 @@ public class PointsManagedBean
 
     public void onRowCancel(RowEditEvent event)
     {
-        FacesMessage msg = new FacesMessage("Edición anulada", ((Points) event.getObject()).toString());
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Edición anulada", ((Points) event.getObject()).toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
@@ -76,7 +76,7 @@ public class PointsManagedBean
 
             pointsFacade.remove(point);
 
-            FacesMessage msg = new FacesMessage("Punto eliminado", point.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Punto eliminado", point.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
@@ -93,12 +93,12 @@ public class PointsManagedBean
 
             pointsFacade.create(point);
 
-            FacesMessage msg = new FacesMessage("Punto creado", point.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Punto creado", point.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
 
         } else
         {
-            FacesMessage msg = new FacesMessage("No se puede crear", "Ya existe un punto con ese ID");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"No se pudo crear", "Ya existe un punto con ese ID");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 

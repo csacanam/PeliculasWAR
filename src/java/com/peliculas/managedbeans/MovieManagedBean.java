@@ -12,14 +12,16 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 import org.primefaces.event.RowEditEvent;
 
 /**
  *
  * @author csacanam
  */
-public class MovieManagedBean
+public class MovieManagedBean implements Converter
 {
 
     private List<Movie> movies;
@@ -56,7 +58,7 @@ public class MovieManagedBean
 
             movieFacade.edit(movie);
 
-            FacesMessage msg = new FacesMessage("Película editada", movie.getName());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Película editada", movie.getName());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
@@ -64,7 +66,7 @@ public class MovieManagedBean
 
     public void onRowCancel(RowEditEvent event)
     {
-        FacesMessage msg = new FacesMessage("Edición anulada", ((Movie) event.getObject()).getName());
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Edición anulada", ((Movie) event.getObject()).getName());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
@@ -76,7 +78,7 @@ public class MovieManagedBean
 
             movieFacade.remove(movie);
 
-            FacesMessage msg = new FacesMessage("Película eliminada", movie.getName());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Película eliminada", movie.getName());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
@@ -95,18 +97,18 @@ public class MovieManagedBean
 
                 movieFacade.create(movie);
 
-                FacesMessage msg = new FacesMessage("Película creada", movie.getName());
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Película creada", movie.getName());
                 FacesContext.getCurrentInstance().addMessage(null, msg);
 
             } else
             {
-                FacesMessage msg = new FacesMessage("No se puede crear", "Ya existe una película con ese ID");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"No se pudo crear", "Ya existe una película con ese ID");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
             }
 
         } else
         {
-            FacesMessage msg = new FacesMessage("Campos vacíos", "Llena los campos para continuar");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Campos vacíos", "Llena los campos para continuar");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
@@ -151,6 +153,47 @@ public class MovieManagedBean
     public void setActores(String actores)
     {
         this.actores = actores;
+    }
+
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value)
+    {
+
+        try
+        {
+            if (value.trim().equals(""))
+            {
+                return null;
+            } else
+            {
+                int theId = Integer.parseInt(value);
+
+                for (Movie movie : movies)
+                {
+                    if (movie.getId() == theId)
+                    {
+                        return movie;
+                    }
+                }
+            }
+        } catch (NumberFormatException e)
+        {
+
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value)
+    {
+        if (value == null || value.equals(""))
+        {
+            return "";
+        } else
+        {
+            return ((Movie) value).getId().toString();
+        }
     }
 
 }

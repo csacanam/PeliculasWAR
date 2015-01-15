@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition  
+    xmlns="http://www.w3.org/1999/xhtml"
+    template="/templates/layout.xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <br></br>
+
+        <!-- CREATE -->
+        <h:form id="formCreate">            
+            <h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="newshowtiming" >
+                <h:outputText value="Nuevo Show timing" />
+            </h:outputLink>
+
+            <p:growl id="msgsCreate" showDetail="true" life="1000" />
+
+            <p:dialog header="Nuevo Show timing" widgetVar="dlg" resizable="false" >
+                <h:panelGrid columns="2" cellpadding="5">
+                    <h:outputLabel for="id" value="ID:" />
+                    <p:inputText id="id" value="#{showTimingManagedBean.id}" required="true" label="id" style="width:200px"/>
+
+                    <h:outputLabel for="name" value="Día:" />
+                    <p:inputText id="name" value="#{showTimingManagedBean.day}" required="true" label="day" style="width:200px" />
+
+                    <p:outputLabel for="theMovie" value="Película:" />
+                    <p:selectOneMenu id="theMovie" value="#{showTimingManagedBean.movie}" style="width:200px" required="false" converter="#{movieManagedBean}">
+                        <f:selectItem itemLabel="Elija la película" itemValue="" noSelectionOption="true" />
+                        <f:selectItems value="#{movieManagedBean.movies}" var="movieObj" itemLabel="#{movieObj.name}" itemValue="#{movieObj}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="theTheater" value="Teatro:" />
+                    <p:selectOneMenu id="theTheater" value="#{showTimingManagedBean.theater}" style="width:200px" required="false" converter="#{theaterManagedBean}">
+                        <f:selectItem itemLabel="Elija el teatro" itemValue="" noSelectionOption="true" />
+                        <f:selectItems value="#{theaterManagedBean.theaters}" var="theaterObj" itemLabel="#{theaterObj.toString()}" itemValue="#{theaterObj}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="theTimeslot" value="Timeslot:" />
+                    <p:selectOneMenu id="theTimeslot" value="#{showTimingManagedBean.timeslot}" style="width:200px" required="false" converter="#{timeslotManagedBean}">
+                        <f:selectItem itemLabel="Elija el timeslot" itemValue="" noSelectionOption="true" />
+                        <f:selectItems value="#{timeslotManagedBean.timeslots}" var="timeslotObj" itemLabel="#{timeslotObj.toString()}" itemValue="#{timeslotObj}"  />
+                    </p:selectOneMenu>
+                    
+                    <f:facet name="footer">
+                        <p:commandButton value="Crear" actionListener="#{showTimingManagedBean.onCreate()}" update=":formDataTable:showtimings msgsCreate" oncomplete="PF('dlg').hide()" onerror=""/>
+                    </f:facet>  
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <br></br>
+
+
+        <!--FORM DATA TABLE -->
+
+        <h:form id="formDataTable">
+
+            <p:growl id="msgsDataTable" showDetail="true"/>
+
+
+            <!-- Data table -->
+
+            <p:dataTable id="showtimings" var="showtiming" value="#{showTimingManagedBean.showTimings}" editable="true" style="margin-bottom:20px" rows="10" paginator="true">
+
+                <p:ajax event="rowEdit" listener="#{showTimingManagedBean.onRowEdit}" update=":formDataTable:msgsDataTable" />
+                <p:ajax event="rowEditCancel" listener="#{showTimingManagedBean.onRowCancel}" update=":formDataTable:msgsDataTable" />
+
+
+                <p:column headerText="Código">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{showtiming.id}"  /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{showtiming.id}" style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Día">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{showtiming.day}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{showtiming.day}" style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Película">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{showtiming.movieId}" /></f:facet>
+                        <f:facet name="input">
+                            <h:selectOneMenu value="#{showtiming.movieId}" style="width:100%" converter="#{movieManagedBean}">
+                                <f:selectItems value="#{movieManagedBean.movies}" var="movie" itemLabel="#{movie}" itemValue="#{movie}" />
+                            </h:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Teatro">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{showtiming.theaterId}" /></f:facet>
+                        <f:facet name="input">
+                            <h:selectOneMenu value="#{showtiming.theaterId}" style="width:100%" converter="#{theaterManagedBean}">
+                                <f:selectItems value="#{theaterManagedBean.theaters}" var="theater" itemLabel="#{theater}" itemValue="#{theater}" />
+                            </h:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Timeslot">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{showtiming.timingId}" /></f:facet>
+                        <f:facet name="input">
+                            <h:selectOneMenu value="#{showtiming.timingId}" style="width:100%" converter="#{timeslotManagedBean}">
+                                <f:selectItems value="#{timeslotManagedBean.timeslots}" var="timeslot" itemLabel="#{timeslot}" itemValue="#{timeslot}" />
+                            </h:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+
+                <!-- Opción editar -->
+                <p:column style="width:32px">
+                    <p:rowEditor />
+                </p:column>
+
+                <!-- Opción borrar -->
+
+                <p:column style="width:32px">
+                    <p:commandButton icon="ui-icon-trash"
+                                     title="Borrar"
+                                     actionListener="#{showTimingManagedBean.onDelete(showtiming)}"
+                                     ajax="false" />
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

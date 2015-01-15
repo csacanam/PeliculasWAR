@@ -73,12 +73,20 @@
                 </p:column>
 
                 <!-- Opción borrar -->
-
                 <p:column style="width:32px">
                     <p:commandButton icon="ui-icon-trash"
                                      title="Borrar"
                                      actionListener="#{theaterManagedBean.onDelete(theater)}"
                                      ajax="false" />
+                </p:column>
+
+                <!-- Opción detalles -->
+                <p:column style="width:50px">
+
+                    <p:link outcome="theaterDetails" value="Detalle">
+                        <f:param name="theaterId" value="#{theater.id}" />
+                    </p:link>
+
                 </p:column>
 
             </p:dataTable>

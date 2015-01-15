@@ -34,4 +34,14 @@
         <managed-bean-class>com.peliculas.managedbeans.PointsManagedBean</managed-bean-class>
         <managed-bean-scope>session</managed-bean-scope>
     </managed-bean>
+    <managed-bean>
+        <managed-bean-name>salesManagedBean</managed-bean-name>
+        <managed-bean-class>com.peliculas.managedbeans.SalesManagedBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>showTimingManagedBean</managed-bean-name>
+        <managed-bean-class>com.peliculas.managedbeans.ShowTimingManagedBean</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
 </faces-config>

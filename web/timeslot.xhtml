@@ -91,6 +91,16 @@
                                      ajax="false" />
                 </p:column>
 
+
+                <!-- Opción detalles -->
+                <p:column style="width:50px">
+
+                    <p:link outcome="timeslotDetails" value="Detalle">
+                        <f:param name="timeslotId" value="#{timeslot.id}" />
+                    </p:link>
+
+                </p:column>
+
             </p:dataTable>
 
         </h:form>
