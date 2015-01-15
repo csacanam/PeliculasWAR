@@ -66,6 +66,17 @@
                     </p:cellEditor>
                 </p:column>
 
+                <p:column headerText="Show Timing">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{sale.showTiming}" /></f:facet>
+                        <f:facet name="input">
+                            <h:selectOneMenu value="#{sale.showTiming}" style="width:100%" converter="#{showTimingManagedBean}">
+                                <f:selectItems value="#{showTimingManagedBean.showTimings}" var="showTiming" itemLabel="#{showTiming}" itemValue="#{showTiming}" />
+                            </h:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
 
                 <!-- Opción editar -->
                 <p:column style="width:32px">

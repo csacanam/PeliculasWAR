@@ -5,22 +5,22 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <h:head>
-        <title>Detalle Timeslot</title>
+        <title>Detalle Teatro</title>
         <f:metadata>
-            <f:viewParam name="timeslotId" value="#{timeslotManagedBean.selectedTimeslot}"/>
+            <f:viewParam name="theaterId" value="#{theaterManagedBean.selectedTheater}"/>
         </f:metadata>
     </h:head>
     <h:body>
 
-        <p:button outcome="/timeslot.xhtml?i=1" value="Volver" >
+        <p:button outcome="/user/theater.xhtml?i=2" value="Volver" >
         </p:button>
 
         <br/><br/><br/>
 
-        <p:dataTable id="timeslotShowTimings" var="showTiming" value="#{timeslotManagedBean.getShowTimings(timeslotManagedBean.selectedTimeslot)}"  style="margin-bottom:20px" rows="20" paginator="true">
+        <p:dataTable id="theaterShowTimings" var="showTiming" value="#{theaterManagedBean.getShowTimings(theaterManagedBean.selectedTheater)}"  style="margin-bottom:20px" rows="20" paginator="true">
 
             <f:facet name="header">  
-                Lista de Show Timings del Timeslot # #{timeslotManagedBean.selectedTimeslot}  
+                Lista de Show Timings del Teatro # #{theaterManagedBean.selectedTheater}  
             </f:facet>  
 
 
@@ -36,8 +36,8 @@
                 <h:outputText value="#{showTiming.movieId.name}"  />
             </p:column>
 
-            <p:column headerText="Teatro">
-                <h:outputText value="#{showTiming.theaterId.toString()}"  />
+            <p:column headerText="Timeslot">
+                <h:outputText value="#{showTiming.timingId.toString()}"  />
             </p:column>
 
         </p:dataTable>

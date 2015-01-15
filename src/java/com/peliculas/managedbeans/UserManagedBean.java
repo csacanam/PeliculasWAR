@@ -5,10 +5,15 @@
  */
 package com.peliculas.managedbeans;
 
+import com.peliculas.entities.Usuario;
 import com.peliculas.sessionbeans.UsuarioFacade;
+import com.peliculas.utils.Validaciones;
 import java.io.IOException;
+import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.servlet.ServletException;
@@ -18,61 +23,146 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author csacanam
  */
-public class UserManagedBean {
+public class UserManagedBean
+{
+
+    private String name;
+    private String password;
+    private boolean isLogged;
 
     @EJB
     UsuarioFacade usuarioFacade;
 
-    private String name;
-    private String password;
-
     /**
      * Creates a new instance of UserManagedBean
      */
-    public UserManagedBean() {
+    public UserManagedBean()
+    {
     }
 
-    public String getName() {
+    @PostConstruct
+    public void init()
+    {
+    }
+
+    public void login()
+    {
+
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+        HttpServletRequest req = (HttpServletRequest) ec.getRequest();
+
+        if (!Validaciones.esVacio(name) && !Validaciones.esVacio(password))
+        {
+            Usuario usuTemp = usuarioFacade.find(name);
+
+            // El login es correcto
+            if (usuTemp != null && usuTemp.getPassword().equals(password))
+            {
+                try
+                {
+                    ec.redirect(req.getContextPath() + "/faces/user/movies.xhtml?i=0");
+                    setIsLogged(true);
+
+                } catch (IOException ex)
+                {
+                    setIsLogged(false);
+                    fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo iniciar sesión", "Intenta más tarde"));
+                }
+
+            } else
+            {
+                setIsLogged(false);
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Datos incorrectos", "Digite correctamente su username o su contraseña"));
+
+            }
+        } else
+        {
+            setIsLogged(false);
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Campos vacíos", "Digite su username y su contraseña"));
+        }
+
+    }
+
+    public void logout()
+    {
+
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+        HttpServletRequest req = (HttpServletRequest) ec.getRequest();
+
+        if (isLogged)
+        {
+            setIsLogged(false);
+            name = null;
+            password = null;
+
+            try
+            {
+                ec.redirect(req.getContextPath() + "/faces/login.xhtml");
+            } catch (IOException ex)
+            {
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo cerrar sesión", "Intente más tarde"));
+
+            }
+
+        }
+    }
+
+    public void register()
+    {
+
+        FacesContext fc = FacesContext.getCurrentInstance();
+        ExternalContext ec = fc.getExternalContext();
+
+        if (!Validaciones.esVacio(name) && !Validaciones.esVacio(password))
+        {
+            Usuario usuTemp = usuarioFacade.find(name);
+
+            if (usuTemp == null)
+            {
+                usuarioFacade.create(new Usuario(name, password));
+                login();
+            } else
+            {
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "El username ya ha sido usado", "Intente con otro username"));
+            }
+        } else
+        {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Campos vacíos", "Digite su username y su contraseña"));
+
+        }
+
+    }
+
+    public String getName()
+    {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(String name)
+    {
         this.name = name;
     }
 
-    public String getPassword() {
+    public String getPassword()
+    {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(String password)
+    {
         this.password = password;
     }
 
-    public void login(ActionEvent event) 
+    public boolean isIsLogged()
     {
-        
-        FacesContext context = FacesContext.getCurrentInstance();
-        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        return isLogged;
+    }
 
-        try 
-        {
-            String navigateString = "/home.xhtml";
-            
-        // Checks if username and password are valid if not throws a ServletException
-            request.login(name, password);
-    
-            try 
-            {
-                context.getExternalContext().redirect(request.getContextPath() + navigateString);
-            } catch (IOException ex) 
-            {
-                context.addMessage(null, new FacesMessage("Error!", "Exception occured"));
-            }
-        } 
-        catch (ServletException e)
-        {
-            context.addMessage(null, new FacesMessage("Error!", "The username or password you provided does not match our records."));
-        }
+    public void setIsLogged(boolean isLogged)
+    {
+        this.isLogged = isLogged;
     }
 
 }

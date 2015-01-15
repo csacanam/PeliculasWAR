@@ -6,6 +6,7 @@
 package com.peliculas.managedbeans;
 
 import com.peliculas.entities.Sales;
+import com.peliculas.entities.ShowTiming;
 import com.peliculas.sessionbeans.SalesFacade;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -28,6 +29,7 @@ public class SalesManagedBean implements Converter
     //Atributos
     private int id;
     private double amount;
+    private ShowTiming showTiming;
 
     //Session Bean
     @EJB
@@ -89,7 +91,6 @@ public class SalesManagedBean implements Converter
 
         if (!sales.contains(sale))
         {
-
             sales.add(sale);
 
             salesFacade.create(sale);
@@ -136,6 +137,16 @@ public class SalesManagedBean implements Converter
         this.amount = amount;
     }
 
+    public ShowTiming getShowTiming()
+    {
+        return showTiming;
+    }
+
+    public void setShowTiming(ShowTiming showTiming)
+    {
+        this.showTiming = showTiming;
+    }
+    
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value)
     {

@@ -14,14 +14,16 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 import org.primefaces.event.RowEditEvent;
 
 /**
  *
  * @author csacanam
  */
-public class ShowTimingManagedBean
+public class ShowTimingManagedBean implements Converter
 {
 
     private List<ShowTiming> showTimings;
@@ -60,7 +62,7 @@ public class ShowTimingManagedBean
 
             showTimingFacade.edit(showTiming);
 
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Show timing editado", showTiming.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Show timing editado", showTiming.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
@@ -68,7 +70,7 @@ public class ShowTimingManagedBean
 
     public void onRowCancel(RowEditEvent event)
     {
-        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Edición anulada", ((ShowTiming) event.getObject()).toString());
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Edición anulada", ((ShowTiming) event.getObject()).toString());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
@@ -80,7 +82,7 @@ public class ShowTimingManagedBean
 
             showTimingFacade.remove(showTiming);
 
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Show timing eliminado", showTiming.toString());
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Show timing eliminado", showTiming.toString());
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
     }
@@ -105,17 +107,17 @@ public class ShowTimingManagedBean
                 showTimingFacade.create(showTiming);
                 showTimings.add(showTiming);
 
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,"Show timing creado", showTiming.toString());
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Show timing creado", showTiming.toString());
                 FacesContext.getCurrentInstance().addMessage(null, msg);
             } else
             {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"No se pudo crear", "Los campos no pueden estar vacíos");
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo crear", "Los campos no pueden estar vacíos");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
             }
 
         } else
         {
-            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,"No se pudo crear", "Ya existe un show Timing con ese ID");
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "No se pudo crear", "Ya existe un show Timing con ese ID");
             FacesContext.getCurrentInstance().addMessage(null, msg);
         }
 
@@ -180,6 +182,47 @@ public class ShowTimingManagedBean
     public void setMovie(Movie movie)
     {
         this.movie = movie;
+    }
+
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value)
+    {
+
+        try
+        {
+            if (value.trim().equals(""))
+            {
+                return null;
+            } else
+            {
+                int theId = Integer.parseInt(value);
+
+                for (ShowTiming showTiming : showTimings)
+                {
+                    if (showTiming.getId() == theId)
+                    {
+                        return showTiming;
+                    }
+                }
+            }
+        } catch (NumberFormatException e)
+        {
+
+        }
+
+        return null;
+    }
+
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value)
+    {
+        if (value == null || value.equals(""))
+        {
+            return "";
+        } else
+        {
+            return ((ShowTiming) value).getId().toString();
+        }
     }
 
 }

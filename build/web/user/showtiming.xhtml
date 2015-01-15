@@ -28,19 +28,19 @@
                     <p:inputText id="name" value="#{showTimingManagedBean.day}" required="true" label="day" style="width:200px" />
 
                     <p:outputLabel for="theMovie" value="Película:" />
-                    <p:selectOneMenu id="theMovie" value="#{showTimingManagedBean.movie}" style="width:200px" required="false" converter="#{movieManagedBean}">
+                    <p:selectOneMenu id="theMovie" value="#{showTimingManagedBean.movie}" style="width:200px" required="true" converter="#{movieManagedBean}">
                         <f:selectItem itemLabel="Elija la película" itemValue="" noSelectionOption="true" />
                         <f:selectItems value="#{movieManagedBean.movies}" var="movieObj" itemLabel="#{movieObj.name}" itemValue="#{movieObj}" />
                     </p:selectOneMenu>
 
                     <p:outputLabel for="theTheater" value="Teatro:" />
-                    <p:selectOneMenu id="theTheater" value="#{showTimingManagedBean.theater}" style="width:200px" required="false" converter="#{theaterManagedBean}">
+                    <p:selectOneMenu id="theTheater" value="#{showTimingManagedBean.theater}" style="width:200px" required="true" converter="#{theaterManagedBean}">
                         <f:selectItem itemLabel="Elija el teatro" itemValue="" noSelectionOption="true" />
                         <f:selectItems value="#{theaterManagedBean.theaters}" var="theaterObj" itemLabel="#{theaterObj.toString()}" itemValue="#{theaterObj}" />
                     </p:selectOneMenu>
 
                     <p:outputLabel for="theTimeslot" value="Timeslot:" />
-                    <p:selectOneMenu id="theTimeslot" value="#{showTimingManagedBean.timeslot}" style="width:200px" required="false" converter="#{timeslotManagedBean}">
+                    <p:selectOneMenu id="theTimeslot" value="#{showTimingManagedBean.timeslot}" style="width:200px" required="true" converter="#{timeslotManagedBean}">
                         <f:selectItem itemLabel="Elija el timeslot" itemValue="" noSelectionOption="true" />
                         <f:selectItems value="#{timeslotManagedBean.timeslots}" var="timeslotObj" itemLabel="#{timeslotObj.toString()}" itemValue="#{timeslotObj}"  />
                     </p:selectOneMenu>
